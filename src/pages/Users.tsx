@@ -7,6 +7,9 @@ interface User {
   name: string;
   phone: string;
   additionalPhone: string;
+  referrerOperator: {
+    name: string;
+  };
   telegram: string;
   createdAt: string;
 }
@@ -37,6 +40,9 @@ export default function Users() {
               phone: item.phone,
               additionalPhone: item.additionalPhone,
               telegram: `@${item.username}`,
+              referrerOperator: {
+                name: item.referrerOperator ? item.referrerOperator.name : "-"
+              },
               createdAt: formattedDate,
             };
           });
@@ -54,7 +60,7 @@ export default function Users() {
   }, [_api]);
 
   const filteredUsers = users.filter((user) =>
-    [user.name, user.phone, user.additionalPhone, user.telegram, user.createdAt]
+    [user.name, user.phone, user.additionalPhone, user.telegram, user.referrerOperator.name, user.createdAt]
       .join(" ")
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
@@ -107,6 +113,9 @@ export default function Users() {
                   Telegram username
                 </th>
                 <th className="border border-[#fff] px-4 py-3">
+                  Qabul qilgan operator
+                </th>
+                <th className="border border-[#fff] px-4 py-3">
                   Kelib tushgan vaqt
                 </th>
               </tr>
@@ -128,6 +137,9 @@ export default function Users() {
                   </td>
                   <td className="text-center border border-[#fff] px-4 py-2">
                     {user.telegram}
+                  </td>
+                  <td className="text-center border border-[#fff] px-4 py-2">
+                    {user.referrerOperator.name}
                   </td>
                   <td className="text-center border border-[#fff] px-4 py-2">
                     {user.createdAt}

@@ -9,10 +9,12 @@ export default function Login() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<null | { text: string; type: "success" | "error" }>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
       const res = await axios.post(`${_api}/api/login`, {
@@ -26,7 +28,7 @@ export default function Login() {
         setTimeout(() => {
           setMessage(null);
           window.location.href = "/";
-        }, 2000);
+        }, 1000);
       } else {
         setMessage({ text: "Kirish ruxsati sizda yo'q!", type: "error" });
         setTimeout(() => setMessage(null), 2000);
@@ -35,6 +37,8 @@ export default function Login() {
       console.error("Login xatoligi:", error);
       setMessage({ text: "Kirish ruxsati sizda yo'q!", type: "error" });
       setTimeout(() => setMessage(null), 2000);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -78,9 +82,12 @@ export default function Login() {
         </div>
         <button
           type="submit"
-          className="cursor-pointer w-full bg-[#FFC82A] text-[#21466D] py-2 px-4 rounded font-medium hover:bg-yellow-400"
+          disabled={loading}
+          className={`cursor-pointer w-full bg-[#FFC82A] text-[#21466D] py-2 px-4 rounded font-medium hover:bg-yellow-400 ${
+            loading ? "opacity-70 cursor-not-allowed" : ""
+          }`}
         >
-          Tizimga kirish
+          {loading ? "Kirish qilinmoqda..." : "Tizimga kirish"}
         </button>
       </form>
       <AnimatePresence>
