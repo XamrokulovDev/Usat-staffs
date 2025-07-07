@@ -46,6 +46,18 @@ const Navbar = () => {
             </NavLink>
           </li>
           <li>
+            <NavLink
+              to="/staffs"
+              className={({ isActive }) =>
+                `font-medium transition-all duration-300 ${
+                  isActive ? "text-[#FFC82A] font-semibold" : ""
+                } hover:text-[#FFC82A]`
+              }
+            >
+              Statistika
+            </NavLink>
+          </li>
+          <li>
             <button
               onClick={handleLogout}
               className="cursor-pointer font-medium bg-[#FFC82A] text-[#21466D] rounded-lg px-10 py-2 hover:bg-[#FFC82A] transition ml-20"

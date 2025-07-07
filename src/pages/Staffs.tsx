@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { FaCopy, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+import { FaCopy, FaCheckCircle } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
 import { motion, AnimatePresence } from "framer-motion";
-import PostModal from "../components/PostModal";
 import { NavLink } from "react-router-dom";
 
 export interface Message {
@@ -17,13 +16,11 @@ export interface Operator {
   link: string;
 }
 
-export default function Home() {
+export default function Staffs() {
   const _api = import.meta.env.VITE_API;
   const [operators, setOperators] = useState<Operator[]>([]);
   const [copied, setCopied] = useState(false);
   const [message, setMessage] = useState<null | Message>(null);
-  const [isPostModalOpen, setIsPostModalOpen] = useState(false);
-  const [deletingId, setDeletingId] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -54,29 +51,6 @@ export default function Home() {
     }
   };
 
-  const handleDelete = async (id: number) => {
-    try {
-      setDeletingId(id);
-      const res = await axios.delete(`${_api}/api/operators/${id}`);
-      if (res.data.success) {
-        setOperators(operators.filter((op) => op.id !== id));
-        setMessage({ text: "Xodim o‘chirildi!", type: "success" });
-      } else {
-        setMessage({ text: "O‘chirishda xatolik!", type: "error" });
-      }
-    } catch (error) {
-      console.error("O‘chirishda xatolik:", error);
-      setMessage({ text: "O‘chirishda xatolik!", type: "error" });
-    } finally {
-      setDeletingId(null);
-      setTimeout(() => setMessage(null), 2000);
-    }
-  };
-
-  const handleAdd = () => {
-    setIsPostModalOpen(true);
-  };
-
   const filteredOperators = operators.filter((op) =>
     op.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -101,16 +75,9 @@ export default function Home() {
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#fff]"
               />
             </div>
-            <button
-              onClick={handleAdd}
-              className="cursor-pointer font-medium bg-[#FFC82A] text-[#21466D] rounded-lg mb-5 py-2 px-4"
-            >
-              Xodim qo'shish
-            </button>
           </div>
         </div>
 
-        {/* 🔥 Jadval yoki Xabar */}
         <div className="mt-10 w-full overflow-x-auto">
           {loading ? (
             <p className="text-center text-[#fff] text-lg">Yuklanmoqda...</p>
@@ -129,7 +96,7 @@ export default function Home() {
                   <th className="border border-[#fff] px-4 py-3">№</th>
                   <th className="w-1/3 border border-[#fff] px-4 py-3">Ism Familiya</th>
                   <th className="w-1/3 border border-[#fff] px-4 py-3">Linklar</th>
-                  <th className="w-1/5 border border-[#fff] px-4 py-3">O'chirish</th>
+                  <th className="w-1/5 border border-[#fff] px-4 py-3">Referallar</th>
                 </tr>
               </thead>
               <tbody className="text-[#fff]">
@@ -150,14 +117,9 @@ export default function Home() {
                         </button>
                       </div>
                     </td>
-                    <td className="text-center border border-[#fff] px-4 py-2">
-                      <button
-                        onClick={() => handleDelete(operator.id)}
-                        className="cursor-pointer bg-red-500 text-white rounded px-3 py-1"
-                        disabled={deletingId === operator.id}
-                      >
-                        {deletingId === operator.id ? "O‘chirilmoqda..." : "O‘chirish"}
-                      </button>
+                    <td className="text-center border border-[#fff] underline flex items-center justify-center gap-2 px-4 py-2">
+                      <NavLink to={`/staff-details/${operator.id}`}>5</NavLink>
+                      <NavLink to={`/staff-details/${operator.id}`} className="text-blue-500">ko'rish</NavLink>
                     </td>
                   </tr>
                 ))}
@@ -177,34 +139,6 @@ export default function Home() {
             <FaCheckCircle className="text-green-600" />
             <span>Nusxa olindi!</span>
           </motion.div>
-        )}
-      </AnimatePresence>
-      <AnimatePresence>
-        {message && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className={`fixed top-5 left-1/2 transform -translate-x-1/2 ${
-              message.type === "success" ? "bg-white text-[#21466D]" : "bg-red-500 text-white"
-            } flex items-center gap-2 rounded-md z-50 px-4 py-2 shadow-lg`}
-          >
-            {message.type === "success" ? (
-              <FaCheckCircle className="text-green-600" />
-            ) : (
-              <FaTimesCircle className="text-white" />
-            )}
-            <span>{message.text}</span>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {isPostModalOpen && (
-          <PostModal
-            onClose={() => setIsPostModalOpen(false)}
-            refreshOperators={fetchOperators}
-          />
         )}
       </AnimatePresence>
     </>

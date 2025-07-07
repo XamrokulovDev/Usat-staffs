@@ -1,12 +1,16 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
-import withAuth from "./components/WithAuth";
+import withAuth from './components/WithAuth';
 import RouterLayout from "./layout/Routerlayout";
 import Users from "./pages/Users";
+import Staffs from './pages/Staffs';
+import StaffDetails from "./pages/StaffDetails";
 
 const HomeWithAuth = withAuth(Home);
 const UsersWithAuth = withAuth(Users);
+const StaffWithAuth = withAuth(Staffs);
+const StaffDetailsWithAuth = withAuth(StaffDetails);
 
 export default function App() {
   return (
@@ -16,6 +20,8 @@ export default function App() {
         <Route element={<RouterLayout />}>
           <Route path="/" element={<HomeWithAuth />} />
           <Route path="/users" element={<UsersWithAuth />} />
+          <Route path="/staffs" element={<StaffWithAuth />} />
+          <Route path="/staff-details/:id" element={<StaffDetailsWithAuth />} />
         </Route>
       </Routes>
     </BrowserRouter>
