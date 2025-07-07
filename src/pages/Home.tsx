@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { FaCopy, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+import { CiSearch } from "react-icons/ci";
 import { motion, AnimatePresence } from "framer-motion";
 import PostModal from "../components/PostModal";
 
@@ -15,15 +16,14 @@ export interface Operator {
   link: string;
 }
 
-
 export default function Home() {
   const _api = import.meta.env.VITE_API;
-
   const [operators, setOperators] = useState<Operator[]>([]);
   const [copied, setCopied] = useState(false);
   const [message, setMessage] = useState<null | Message>(null);
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const fetchOperators = async () => {
     try {
@@ -75,6 +75,10 @@ export default function Home() {
     setIsPostModalOpen(true);
   };
 
+  const filteredOperators = operators.filter((op) =>
+    op.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <>
       <div className="container flex flex-col items-center justify-center bg-[#21466D] rounded-2xl overflow-auto mt-40 p-8">
@@ -82,13 +86,29 @@ export default function Home() {
           <h1 className="text-2xl text-[#FFC82A] font-medium mb-4">
             Barcha ishchilar ro'yxati
           </h1>
-          <button
-            onClick={handleAdd}
-            className="cursor-pointer font-medium bg-[#FFC82A] text-[#21466D] rounded-lg mb-5 py-2 px-4"
-          >
-            Xodim qo'shish
-          </button>
+          <div className="flex items-center gap-8">
+            <div className="w-60 relative mb-5">
+              <input
+                placeholder="Qidirish..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300/50 rounded focus:outline-none placeholder:text-gray-300 text-[#fff] pr-10"
+              />
+              <CiSearch
+                size={22}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#fff]"
+              />
+            </div>
+            <button
+              onClick={handleAdd}
+              className="cursor-pointer font-medium bg-[#FFC82A] text-[#21466D] rounded-lg mb-5 py-2 px-4"
+            >
+              Xodim qo'shish
+            </button>
+          </div>
         </div>
+
+        {/* 🔥 Jadval */}
         <div className="mt-10 w-full overflow-x-auto">
           <table className="w-full" style={{ borderCollapse: "collapse" }}>
             <thead className="text-[#fff]">
@@ -100,7 +120,7 @@ export default function Home() {
               </tr>
             </thead>
             <tbody className="text-[#fff]">
-              {operators.map((operator, index) => (
+              {filteredOperators.map((operator, index) => (
                 <tr key={operator.id}>
                   <td className="text-center border border-[#fff] px-4 py-2">{index + 1}</td>
                   <td className="text-center border border-[#fff] px-4 py-2">{operator.name}</td>
@@ -126,6 +146,13 @@ export default function Home() {
                   </td>
                 </tr>
               ))}
+              {filteredOperators.length === 0 && (
+                <tr>
+                  <td colSpan={4} className="text-center border border-[#fff] px-4 py-2">
+                    Hech narsa topilmadi.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

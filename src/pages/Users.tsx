@@ -20,43 +20,53 @@ export default function Users() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get(`${_api}/api/users/`);
-        const { data } = response;
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get(`${_api}/api/users/`);
+      const { data } = response;
+      if (data.success) {
+        const formattedUsers: User[] = data.data.map((item: any) => {
+          const date = new Date(item.applicationDate);
+          const day = String(date.getDate()).padStart(2, "0");
+          const month = String(date.getMonth() + 1).padStart(2, "0");
+          const year = date.getFullYear();
 
-        if (data.success) {
-          const formattedUsers: User[] = data.data.map((item: any) => {
-            const date = new Date(item.applicationDate);
-            const day = String(date.getDate()).padStart(2, "0");
-            const month = String(date.getMonth() + 1).padStart(2, "0");
-            const year = date.getFullYear();
-            const formattedDate = `${day}.${month}.${year}`;
+          const hours = String(date.getHours()).padStart(2, "0");
+          const minutes = String(date.getMinutes()).padStart(2, "0");
+          const seconds = String(date.getSeconds()).padStart(2, "0");
 
-            return {
-              id: item.id,
-              name: item.fullName,
-              phone: item.phone,
-              additionalPhone: item.additionalPhone,
-              telegram: `@${item.username}`,
-              referrerOperator: {
-                name: item.referrerOperator ? item.referrerOperator.name : "-"
-              },
-              createdAt: formattedDate,
-            };
-          });
+          const formattedDate = `${day}.${month}.${year} - ${hours}:${minutes}:${seconds}`;
 
-          setUsers(formattedUsers);
-        }
-      } catch (error) {
-        console.error("Xatolik:", error);
-      } finally {
-        setLoading(false);
+          return {
+            id: item.id,
+            name: item.fullName,
+            phone: item.phone,
+            additionalPhone: item.additionalPhone,
+            telegram: `@${item.username}`,
+            referrerOperator: {
+              name: item.referrerOperator ? item.referrerOperator.name : "-"
+            },
+            createdAt: formattedDate,
+          };
+        });
+
+        setUsers(formattedUsers);
       }
-    };
+    } catch (error) {
+      console.error("Xatolik:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchUsers();
+
+    const intervalId = setInterval(() => {
+      fetchUsers();
+    }, 1000);
+
+    return () => clearInterval(intervalId);
   }, [_api]);
 
   const filteredUsers = users.filter((user) =>
@@ -85,7 +95,6 @@ export default function Users() {
           />
         </div>
       </div>
-
       <div className="mt-10 w-full">
         {loading ? (
           <p className="text-center text-[#fff] text-lg">Yuklanmoqda...</p>
