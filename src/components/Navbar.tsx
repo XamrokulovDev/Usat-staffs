@@ -10,7 +10,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="w-full fixed top-0 left-0 bg-[#21466D] text-[#fff] py-5 shadow-md z-50">
+    <nav className="w-full fixed top-0 left-0 z-40 bg-[#21466D] text-[#fff] py-5 shadow-md z-50">
       <div className="container flex justify-between items-center mx-auto px-4">
         <NavLink to="/">
           <img 
@@ -23,7 +23,7 @@ const Navbar = () => {
         <ul className="flex items-center gap-8">
           <li>
             <NavLink
-              to="/staff"
+              to="/"
               className={({ isActive }) =>
                 `font-medium transition-all duration-300 ${
                   isActive ? "text-[#FFC82A] font-semibold" : ""
