@@ -74,11 +74,11 @@ const Modal = ({ onClose, refreshOperators }: ModalProps) => {
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1, transition: { duration: 0.3 } }}
           exit={{ scale: 0.8, opacity: 0, transition: { duration: 0.2 } }}
-          className="bg-white text-[#21466D] rounded-lg w-[400px] relative p-8"
+          className="bg-[#fff] text-[#21466D] rounded-lg w-[400px] relative p-8"
         >
           <button
             onClick={onClose}
-            className="cursor-pointer absolute top-3 right-3 bg-[#21466D] text-white rounded p-1"
+            className="cursor-pointer absolute top-3 right-3 bg-[#21466D] text-[#fff] rounded p-1"
           >
             <IoMdClose size={22} />
           </button>
@@ -97,7 +97,7 @@ const Modal = ({ onClose, refreshOperators }: ModalProps) => {
               disabled={loading}
               className={`w-full ${
                 loading ? "bg-gray-400 cursor-not-allowed" : "bg-[#21466D] hover:bg-[#193b58]"
-              } text-white rounded cursor-pointer mt-3 p-[10px]`}
+              } text-[#fff] rounded cursor-pointer mt-3 p-[10px]`}
             >
               {loading ? "Qo'shilmoqda..." : "Qo'shish"}
             </button>
@@ -112,16 +112,16 @@ const Modal = ({ onClose, refreshOperators }: ModalProps) => {
             exit={{ opacity: 0, y: -20 }}
             className={`fixed top-5 left-1/2 transform -translate-x-1/2 ${
               message.type === "success"
-                ? "bg-white text-[#21466D]"
+                ? "bg-[#fff] text-[#21466D]"
                 : message.type === "warning"
-                ? "bg-yellow-400 text-[#21466D]"
-                : "bg-red-500 text-white"
+                ? "bg-yellow-400 text-[#fff]"
+                : "bg-red-500 text-[#fff]"
             } flex items-center gap-2 rounded-md z-50 px-4 py-2 shadow-lg`}
           >
             {message.type === "success" ? (
               <FaCheckCircle className="text-green-600" />
             ) : (
-              <FaTimesCircle className="text-white" />
+              <FaTimesCircle className="text-[#fff]" />
             )}
             <span>{message.text}</span>
           </motion.div>

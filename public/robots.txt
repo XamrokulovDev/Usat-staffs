@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://usat-staffs.netlify.app/sitemap.xml
