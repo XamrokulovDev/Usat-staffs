@@ -64,7 +64,7 @@ export default function Users() {
 
     const intervalId = setInterval(() => {
       fetchUsers();
-    }, 1000);
+    }, 500);
 
     return () => clearInterval(intervalId);
   }, [_api]);
