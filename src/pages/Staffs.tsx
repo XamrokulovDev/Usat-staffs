@@ -14,6 +14,7 @@ export interface Operator {
   id: number;
   name: string;
   link: string;
+  referalCount: number;
 }
 
 export default function Staffs() {
@@ -28,6 +29,7 @@ export default function Staffs() {
       const res = await axios.get(`${_api}/api/operators/`);
       if (res.data.success) {
         setOperators(res.data.data);
+        console.log(res.data.data);
       }
     } catch (error) {
       console.error("Xatolik operatorlarni olishda:", error);
@@ -117,7 +119,7 @@ export default function Staffs() {
                       </div>
                     </td>
                     <td className="text-center border border-[#fff] underline flex items-center justify-center gap-2 px-4 py-2">
-                      <NavLink to={`/staff-details/${operator.id}`}>5</NavLink>
+                      <NavLink to={`/staff-details/${operator.id}`}>{operator.referalCount}</NavLink>
                       <NavLink to={`/staff-details/${operator.id}`} className="text-blue-500">ko'rish</NavLink>
                     </td>
                   </tr>
