@@ -39,11 +39,6 @@ export default function Users() {
       const { data } = response;
       if (data.success) {
         const formattedUsers: User[] = data.data
-          .sort(
-            (a: ApiUser, b: ApiUser) =>
-              new Date(b.applicationDate).getTime() -
-              new Date(a.applicationDate).getTime()
-          )
           .map((item: ApiUser) => {
             return {
               id: item.id,
@@ -56,7 +51,7 @@ export default function Users() {
               },
               createdAt: new Date(item.applicationDate),
             };
-          }).reverse();
+          }).sort((a: User, b: User) => b.createdAt.getTime() - a.createdAt.getTime());
         setUsers(formattedUsers);
       }
     } catch (error) {
@@ -104,7 +99,8 @@ export default function Users() {
     const year = date.getFullYear();
     const hours = String(date.getHours()).padStart(2, "0");
     const minutes = String(date.getMinutes()).padStart(2, "0");
-    return `${day}.${month}.${year} - ${hours}:${minutes}`;
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+    return `${day}.${month}.${year} - ${hours}:${minutes}:${seconds}`;
   }
 
   return (
