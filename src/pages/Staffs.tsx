@@ -20,7 +20,6 @@ export default function Staffs() {
   const _api = import.meta.env.VITE_API;
   const [operators, setOperators] = useState<Operator[]>([]);
   const [copied, setCopied] = useState(false);
-  const [message, setMessage] = useState<null | Message>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
 
