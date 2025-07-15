@@ -30,6 +30,7 @@ const News = () => {
     try {
       const response = await axios.get(`${_api}/api/news`);
       setNewsList(response.data.data);
+      console.log(response.data.data);
     } catch (error) {
       console.error("Yangiliklarni olishda xatolik:", error);
     }
@@ -200,27 +201,26 @@ const News = () => {
             {loading ? "Yuborilmoqda..." : "Yuborish"}
           </button>
         </form>
-
         <div className="w-full mt-15">
           <h2 className="text-lg text-white font-medium mb-8">
             Yangiliklar ro'yxati
           </h2>
           <div className="flex flex-col gap-4">
             {newsList.length === 0 ? (
-              <p className="text-white">Yangiliklar hali yo'q.</p>
+              <p className="text-white">Yangiliklar mavjud</p>
             ) : (
               newsList.map((news) => (
                 <div
                   key={news.id}
                   className="bg-white p-4 rounded shadow text-[#21466D]"
                 >
-                  {news.image && (
+                  {/* {news.image && (
                     <img
-                      src={`${_api}/${news.image}`}
+                      src={`${_api}/uploads/${news.image}`}
                       alt="Yangilik rasmi"
                       className="w-40 h-auto rounded"
                     />
-                  )}
+                  )} */}
                   <div
                     dangerouslySetInnerHTML={{ __html: news.content }}
                     className="mb-2"
