@@ -17,6 +17,9 @@ const News = () => {
   const _api = import.meta.env.VITE_API;
 
   const [description, setDescription] = useState<string>("");
+  const [descriptionLength, setDescriptionLength] = useState<number>(0);
+  const maxLength = 1024;
+
   const [image, setImage] = useState<File | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -43,8 +46,20 @@ const News = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!image) {
+    if (!image || descriptionLength === 0) {
       setToastMessage("Formani to'liq to'ldiring!");
+      setToastType("error");
+
+      setTimeout(() => {
+        setToastMessage("");
+        setToastType("");
+      }, 3000);
+
+      return;
+    }
+
+    if (descriptionLength > maxLength) {
+      setToastMessage("Tavsif 1024 belgidan oshib ketdi!");
       setToastType("error");
 
       setTimeout(() => {
@@ -71,6 +86,7 @@ const News = () => {
       setToastMessage("Yangilik saqlandi!");
       setToastType("success");
       setDescription("");
+      setDescriptionLength(0);
       setImage(null);
       fetchNews();
     } catch (error) {
@@ -130,17 +146,17 @@ const News = () => {
         )}
       </AnimatePresence>
 
+      {/* Form */}
       <div className="container flex flex-col items-center justify-center bg-[#21466D] rounded-2xl overflow-auto mt-40 mb-10 p-8">
         <div className="w-full flex items-center justify-between">
           <h1 className="text-2xl text-[#FFC82A] font-medium mb-4">
             Yangilik joylash
           </h1>
-          <div className="flex items-center gap-5">
-            <NavLink to="/" className="underline text-white mb-5">
-              Orqaga qaytish
-            </NavLink>
-          </div>
+          <NavLink to="/" className="underline text-white mb-5">
+            Orqaga qaytish
+          </NavLink>
         </div>
+
         <form
           onSubmit={handleSubmit}
           className="flex flex-col gap-6 w-full bg-white p-6 rounded-lg mt-10"
@@ -188,8 +204,16 @@ const News = () => {
               onChange={(_, editor) => {
                 const data = editor.getData();
                 setDescription(data);
+                setDescriptionLength(data.length);
               }}
             />
+            <p
+              className={`text-sm mt-2 ${
+                descriptionLength > maxLength ? "text-red-600" : "text-gray-500"
+              }`}
+            >
+              {descriptionLength}/{maxLength} belgi kiritildi
+            </p>
           </div>
           <button
             type="submit"
@@ -207,7 +231,7 @@ const News = () => {
           </h2>
           <div className="flex flex-col gap-4">
             {newsList.length === 0 ? (
-              <p className="text-white">Yangiliklar mavjud</p>
+              <p className="text-white">Yangiliklar mavjud emas</p>
             ) : (
               newsList.map((news) => (
                 <div
@@ -223,7 +247,7 @@ const News = () => {
                   )}
                   <div
                     dangerouslySetInnerHTML={{ __html: news.content }}
-                    className="mb-2"
+                    className="mt-10 mb-2"
                   ></div>
                   <div className="w-full flex items-center justify-end">
                     <button
