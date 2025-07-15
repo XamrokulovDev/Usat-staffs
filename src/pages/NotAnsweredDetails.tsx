@@ -7,7 +7,7 @@ interface APIUser {
   id: number;
   fullName: string;
   phone: string;
-  additionalPhone: string;
+  additionalPhone: string | null;
   username: string;
   applicationDate: string;
   referrerOperator?: {
@@ -19,7 +19,7 @@ interface User {
   id: number;
   name: string;
   phone: string;
-  additionalPhone: string;
+  additionalPhone: string | null;
   referrerOperator: {
     name: string;
   };
@@ -27,7 +27,7 @@ interface User {
   createdAt: string;
 }
 
-export default function StaffDetails() {
+export default function NotAnsweredDetails() {
   const { id } = useParams();
   const _api = import.meta.env.VITE_API;
   const [searchTerm, setSearchTerm] = useState("");
@@ -38,31 +38,34 @@ export default function StaffDetails() {
     try {
       const response = await axios.get(`${_api}/api/operators/users/${id}`);
       const { data } = response;
+
       if (data.success) {
-        const formattedUsers: User[] = data.data.users.map((item: APIUser) => {
-          const date = new Date(item.applicationDate);
-          const day = String(date.getDate()).padStart(2, "0");
-          const month = String(date.getMonth() + 1).padStart(2, "0");
-          const year = date.getFullYear();
+        const formattedUsers: User[] = data.data.users
+          .filter((item: APIUser) => item.additionalPhone === null)
+          .map((item: APIUser) => {
+            const date = new Date(item.applicationDate);
+            const day = String(date.getDate()).padStart(2, "0");
+            const month = String(date.getMonth() + 1).padStart(2, "0");
+            const year = date.getFullYear();
 
-          const hours = String(date.getHours()).padStart(2, "0");
-          const minutes = String(date.getMinutes()).padStart(2, "0");
-          const seconds = String(date.getSeconds()).padStart(2, "0");
+            const hours = String(date.getHours()).padStart(2, "0");
+            const minutes = String(date.getMinutes()).padStart(2, "0");
+            const seconds = String(date.getSeconds()).padStart(2, "0");
 
-          const formattedDate = `${day}.${month}.${year} - ${hours}:${minutes}:${seconds}`;
+            const formattedDate = `${day}.${month}.${year} - ${hours}:${minutes}:${seconds}`;
 
-          return {
-            id: item.id,
-            name: item.fullName,
-            phone: item.phone,
-            additionalPhone: item.additionalPhone,
-            telegram: `@${item.username}`,
-            referrerOperator: {
-              name: item.referrerOperator?.name || "-"
-            },
-            createdAt: formattedDate,
-          };
-        });
+            return {
+              id: item.id,
+              name: item.fullName,
+              phone: item.phone,
+              additionalPhone: item.additionalPhone,
+              telegram: `@${item.username}`,
+              referrerOperator: {
+                name: item.referrerOperator?.name || "-"
+              },
+              createdAt: formattedDate,
+            };
+          });
 
         setUsers(formattedUsers);
       }
@@ -84,7 +87,14 @@ export default function StaffDetails() {
   }, [_api]);
 
   const filteredUsers = users.filter((user) =>
-    [user.name, user.phone, user.additionalPhone, user.telegram, user.referrerOperator.name, user.createdAt]
+    [
+      user.name,
+      user.phone,
+      user.additionalPhone,
+      user.telegram,
+      user.referrerOperator.name,
+      user.createdAt,
+    ]
       .join(" ")
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
@@ -94,7 +104,7 @@ export default function StaffDetails() {
     <div className="container flex flex-col items-center justify-center bg-[#21466D] rounded-2xl overflow-auto mt-40 p-8">
       <div className="w-full flex items-center justify-between">
         <h1 className="text-2xl text-[#FFC82A] font-medium mb-4">
-          Barcha arizachilar
+          Faqat qo'shimcha raqami yo'q bo'lganlar
         </h1>
         <div className="flex items-center gap-5">
           <div className="w-60 relative mb-6">
@@ -161,7 +171,7 @@ export default function StaffDetails() {
                     {user.phone}
                   </td>
                   <td className="text-center border border-[#fff] px-4 py-2">
-                    {user.additionalPhone}
+                    {user.additionalPhone || "-"}
                   </td>
                   <td className="text-center border border-[#fff] px-4 py-2">
                     {user.telegram}

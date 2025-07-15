@@ -6,6 +6,8 @@ import RouterLayout from "./layout/Routerlayout";
 import Users from "./pages/Users";
 import Staffs from './pages/Staffs';
 import StaffDetails from "./pages/StaffDetails";
+import NotAnswered from "./pages/NotAnswered";
+import News from "./pages/News";
 
 const HomeWithAuth = withAuth(Home);
 const UsersWithAuth = withAuth(Users);
@@ -22,6 +24,8 @@ export default function App() {
           <Route path="/users" element={<UsersWithAuth />} />
           <Route path="/staffs" element={<StaffWithAuth />} />
           <Route path="/staff-details/:id" element={<StaffDetailsWithAuth />} />
+          <Route path="/not-answered" element={<NotAnswered />} />
+          <Route path="/news" element={<News />} />
         </Route>
       </Routes>
     </BrowserRouter>
