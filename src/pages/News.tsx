@@ -33,7 +33,6 @@ const News = () => {
     try {
       const response = await axios.get(`${_api}/api/news`);
       setNewsList(response.data.data);
-      console.log(response.data.data);
     } catch (error) {
       console.error("Yangiliklarni olishda xatolik:", error);
     }
