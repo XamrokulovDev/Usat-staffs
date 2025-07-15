@@ -214,13 +214,13 @@ const News = () => {
                   key={news.id}
                   className="bg-white p-4 rounded shadow text-[#21466D]"
                 >
-                  {/* {news.image && (
+                  {news.image && (
                     <img
                       src={`${_api}/uploads/${news.image}`}
-                      alt="Yangilik rasmi"
-                      className="w-40 h-auto rounded"
+                      alt={news.image}
+                      className="w-60 h-auto rounded"
                     />
-                  )} */}
+                  )}
                   <div
                     dangerouslySetInnerHTML={{ __html: news.content }}
                     className="mb-2"
