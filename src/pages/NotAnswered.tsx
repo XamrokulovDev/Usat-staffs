@@ -121,11 +121,11 @@ export default function NotAnswered() {
                           </button>
                         </div>
                       </td>
-                      <td className="text-center border border-[#fff] underline flex items-center justify-center text-blue-500 gap-2 px-4 py-2">
+                      <td className="text-center border border-[#fff] underline flex items-center justify-center text-white gap-2 px-4 py-2">
                         <NavLink to={`/not-answered/${operator.id}`}>
                           {nullAdditionalPhoneCount}
                         </NavLink>
-                        <NavLink to={`/not-answered/${operator.id}`} className="text-blue-500">
+                        <NavLink to={`/not-answered/${operator.id}`} className="text-white">
                           ko'rish
                         </NavLink>
                       </td>

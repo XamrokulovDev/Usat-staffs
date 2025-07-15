@@ -241,7 +241,7 @@ const News = () => {
                     <img
                       src={`${_api}/uploads/${news.image}`}
                       alt={news.image}
-                      className="w-60 h-auto rounded"
+                      className="w-70 h-auto rounded"
                     />
                   )}
                   <div

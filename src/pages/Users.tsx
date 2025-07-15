@@ -198,7 +198,7 @@ export default function Users() {
                     {user.phone}
                   </td>
                   <td className="text-center border border-[#fff] px-4 py-2">
-                    {user.additionalPhone || "Tugatilmagan"}
+                    {user.additionalPhone || "-"}
                   </td>
                   <td className="text-center border border-[#fff] px-4 py-2">
                     {user.telegram}
