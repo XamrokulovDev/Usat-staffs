@@ -1,11 +1,17 @@
 import { NavLink } from "react-router-dom";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ImagePlus } from "lucide-react";
 import axios from "axios";
 import { AnimatePresence, motion } from "framer-motion";
 import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+
+interface NewsProps {
+  id: string;
+  content: string;
+  image: string;
+}
 
 const News = () => {
   const _api = import.meta.env.VITE_API;
@@ -16,6 +22,22 @@ const News = () => {
 
   const [toastMessage, setToastMessage] = useState<string>("");
   const [toastType, setToastType] = useState<"success" | "error" | "">("");
+
+  const [newsList, setNewsList] = useState<NewsProps[]>([]);
+  const [deleteLoadingId, setDeleteLoadingId] = useState<string | null>(null);
+
+  const fetchNews = async () => {
+    try {
+      const response = await axios.get(`${_api}/api/news`);
+      setNewsList(response.data.data);
+    } catch (error) {
+      console.error("Yangiliklarni olishda xatolik:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchNews();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -39,23 +61,42 @@ const News = () => {
     formData.append("content", description);
 
     try {
-      const response = await axios.post(`${_api}/api/news`, formData, {
+      await axios.post(`${_api}/api/news`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
-      console.log(response.data);
       setToastMessage("Yangilik saqlandi!");
       setToastType("success");
       setDescription("");
       setImage(null);
+      fetchNews();
     } catch (error) {
-      console.error("Xatolik:", error);
-      setToastMessage("Xatolik yuz berdi. Console ni tekshir!");
+      setToastMessage(error instanceof Error ? error.message : "Xatolik yuz berdi");
       setToastType("error");
     } finally {
       setLoading(false);
+
+      setTimeout(() => {
+        setToastMessage("");
+        setToastType("");
+      }, 3000);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    setDeleteLoadingId(id);
+    try {
+      await axios.delete(`${_api}/api/news/${id}`);
+      setToastMessage("Yangilik o'chirildi");
+      setToastType("success");
+      fetchNews();
+    } catch (error) {
+      setToastMessage(error instanceof Error ? error.message : "Xatolik yuz berdi");
+      setToastType("error");
+    } finally {
+      setDeleteLoadingId(null);
 
       setTimeout(() => {
         setToastMessage("");
@@ -87,7 +128,8 @@ const News = () => {
           </motion.div>
         )}
       </AnimatePresence>
-      <div className="container flex flex-col items-center justify-center bg-[#21466D] rounded-2xl overflow-auto mt-40 p-8">
+
+      <div className="container flex flex-col items-center justify-center bg-[#21466D] rounded-2xl overflow-auto mt-40 mb-10 p-8">
         <div className="w-full flex items-center justify-between">
           <h1 className="text-2xl text-[#FFC82A] font-medium mb-4">
             Yangilik joylash
@@ -98,7 +140,6 @@ const News = () => {
             </NavLink>
           </div>
         </div>
-
         <form
           onSubmit={handleSubmit}
           className="flex flex-col gap-6 w-full bg-white p-6 rounded-lg mt-10"
@@ -159,6 +200,47 @@ const News = () => {
             {loading ? "Yuborilmoqda..." : "Yuborish"}
           </button>
         </form>
+
+        <div className="w-full mt-15">
+          <h2 className="text-lg text-white font-medium mb-8">
+            Yangiliklar ro'yxati
+          </h2>
+          <div className="flex flex-col gap-4">
+            {newsList.length === 0 ? (
+              <p className="text-white">Yangiliklar hali yo'q.</p>
+            ) : (
+              newsList.map((news) => (
+                <div
+                  key={news.id}
+                  className="bg-white p-4 rounded shadow text-[#21466D]"
+                >
+                  {news.image && (
+                    <img
+                      src={`${_api}/${news.image}`}
+                      alt="Yangilik rasmi"
+                      className="w-40 h-auto rounded"
+                    />
+                  )}
+                  <div
+                    dangerouslySetInnerHTML={{ __html: news.content }}
+                    className="mb-2"
+                  ></div>
+                  <div className="w-full flex items-center justify-end">
+                    <button
+                      onClick={() => handleDelete(news.id)}
+                      disabled={deleteLoadingId === news.id}
+                      className="cursor-pointer bg-red-500 text-white px-10 py-1 rounded"
+                    >
+                      {deleteLoadingId === news.id
+                        ? "O'chirilmoqda..."
+                        : "O'chirish"}
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
       </div>
     </>
   );
