@@ -29,7 +29,6 @@ export default function Staffs() {
       const res = await axios.get(`${_api}/api/operators/`);
       if (res.data.success) {
         setOperators(res.data.data);
-        console.log(res.data.data);
       }
     } catch (error) {
       console.error("Xatolik operatorlarni olishda:", error);

@@ -5,16 +5,14 @@ import { CiSearch } from "react-icons/ci";
 import { motion, AnimatePresence } from "framer-motion";
 import { NavLink } from "react-router-dom";
 
-export interface Message {
-  text: string;
-  type: "success" | "error" | "warning";
-}
-
 export interface Operator {
   id: number;
   name: string;
   link: string;
   referalCount: number;
+  users?: {
+    additionalPhone: string | null;
+  }[];
 }
 
 export default function NotAnswered() {
@@ -29,7 +27,6 @@ export default function NotAnswered() {
       const res = await axios.get(`${_api}/api/operators/`);
       if (res.data.success) {
         setOperators(res.data.data);
-        console.log(res.data.data);
       }
     } catch (error) {
       console.error("Xatolik operatorlarni olishda:", error);
@@ -78,7 +75,6 @@ export default function NotAnswered() {
             </div>
           </div>
         </div>
-
         <div className="mt-10 w-full overflow-x-auto">
           {loading ? (
             <p className="text-center text-[#fff] text-lg">Yuklanmoqda...</p>
@@ -101,29 +97,41 @@ export default function NotAnswered() {
                 </tr>
               </thead>
               <tbody className="text-[#fff]">
-                {filteredOperators.map((operator, index) => (
-                  <tr key={operator.id}>
-                    <td className="text-center border border-[#fff] px-4 py-2">{index + 1}</td>
-                    <td className="text-center border border-[#fff] underline px-4 py-2">
-                      <NavLink to={`/staff-details/${operator.id}`}>{operator.name}</NavLink>
-                    </td>
-                    <td className="border border-[#fff] px-4 py-2">
-                      <div className="flex items-center justify-between relative">
-                        <p className="break-all">{operator.link}</p>
-                        <button
-                          className="text-[#fff] cursor-pointer ml-2"
-                          onClick={() => handleCopy(operator.link)}
-                        >
-                          <FaCopy />
-                        </button>
-                      </div>
-                    </td>
-                    <td className="text-center border border-[#fff] underline flex items-center justify-center gap-2 px-4 py-2">
-                      <NavLink to={`/staff-details/${operator.id}`}>{operator.referalCount}</NavLink>
-                      <NavLink to={`/staff-details/${operator.id}`} className="text-blue-500">ko'rish</NavLink>
-                    </td>
-                  </tr>
-                ))}
+                {filteredOperators.map((operator, index) => {
+                  const nullAdditionalPhoneCount = operator.users
+                    ? operator.users.filter((user) => user.additionalPhone === null).length
+                    : 0;
+
+                  return (
+                    <tr key={operator.id}>
+                      <td className="text-center border border-[#fff] px-4 py-2">
+                        {index + 1}
+                      </td>
+                      <td className="text-center border border-[#fff] underline px-4 py-2">
+                        <NavLink to={`/not-answered/${operator.id}`}>{operator.name}</NavLink>
+                      </td>
+                      <td className="border border-[#fff] px-4 py-2">
+                        <div className="flex items-center justify-between relative">
+                          <p className="break-all">{operator.link}</p>
+                          <button
+                            className="text-[#fff] cursor-pointer ml-2"
+                            onClick={() => handleCopy(operator.link)}
+                          >
+                            <FaCopy />
+                          </button>
+                        </div>
+                      </td>
+                      <td className="text-center border border-[#fff] underline flex items-center justify-center text-blue-500 gap-2 px-4 py-2">
+                        <NavLink to={`/not-answered/${operator.id}`}>
+                          {nullAdditionalPhoneCount}
+                        </NavLink>
+                        <NavLink to={`/not-answered/${operator.id}`} className="text-blue-500">
+                          ko'rish
+                        </NavLink>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           )}

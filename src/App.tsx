@@ -8,6 +8,7 @@ import Staffs from './pages/Staffs';
 import StaffDetails from "./pages/StaffDetails";
 import NotAnswered from "./pages/NotAnswered";
 import News from "./pages/News";
+import NotAnsweredDetails from "./pages/NotAnsweredDetails";
 
 const HomeWithAuth = withAuth(Home);
 const UsersWithAuth = withAuth(Users);
@@ -25,6 +26,7 @@ export default function App() {
           <Route path="/staffs" element={<StaffWithAuth />} />
           <Route path="/staff-details/:id" element={<StaffDetailsWithAuth />} />
           <Route path="/not-answered" element={<NotAnswered />} />
+          <Route path="/not-answered/:id" element={<NotAnsweredDetails />} />
           <Route path="/news" element={<News />} />
         </Route>
       </Routes>

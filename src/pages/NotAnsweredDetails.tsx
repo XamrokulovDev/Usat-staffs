@@ -104,7 +104,7 @@ export default function NotAnsweredDetails() {
     <div className="container flex flex-col items-center justify-center bg-[#21466D] rounded-2xl overflow-auto mt-40 p-8">
       <div className="w-full flex items-center justify-between">
         <h1 className="text-2xl text-[#FFC82A] font-medium mb-4">
-          Faqat qo'shimcha raqami yo'q bo'lganlar
+          Qo'shimcha raqami yo'q bo'lganlar
         </h1>
         <div className="flex items-center gap-5">
           <div className="w-60 relative mb-6">
@@ -119,7 +119,7 @@ export default function NotAnsweredDetails() {
               className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#fff]"
             />
           </div>
-          <NavLink to="/staffs" className="underline text-[#fff] mb-5">
+          <NavLink to="/not-answered" className="underline text-[#fff] mb-5">
             Orqaga qaytish
           </NavLink>
         </div>
@@ -171,7 +171,7 @@ export default function NotAnsweredDetails() {
                     {user.phone}
                   </td>
                   <td className="text-center border border-[#fff] px-4 py-2">
-                    {user.additionalPhone || "-"}
+                    {user.additionalPhone || "Tugatilmagan"}
                   </td>
                   <td className="text-center border border-[#fff] px-4 py-2">
                     {user.telegram}
